@@ -28,7 +28,7 @@ function start() {
             type: 'rawlist',
             message: 'What would you like do?',
             choices: [
-                'Add Employee', 'Add Department', 'Add Role', 'View All Employees', 'View All Departments', 'Update Employee Role', 'Remove Employee', 'Exit'
+                'Add Employee', 'Add Department', 'Add Role', 'View All Employees', 'View All Departments', 'View All Roles','Update Employee Role', 'Remove Employee', 'Exit'
             ]
         })
 
@@ -56,7 +56,7 @@ function start() {
                     break;
 
                 case 'View All Roles':
-                    viewByRole()
+                    viewRole()
                     break;
 
 
@@ -77,6 +77,67 @@ function start() {
             }
         });
 }
+
+function addDepartment(){
+    inquirer.prompt({
+        
+            name: 'add_department',
+            type: 'input',
+            message: 'Enter name of department you would like to add.'
+        })
+
+    .then(function (answer){
+
+        const query = connection.query(
+            'INSERT INTO department SET ?',
+            {
+                department: answer.add_department
+            },
+            function (err, res){
+                if (err) throw err;
+                start();
+            }
+        );
+    });
+}
+
+function addRole(){
+    inquirer.prompt([
+        {
+            name: 'role',
+            type: 'input',
+            message: 'Enter role you would like to add.'
+        },
+
+        {
+            name: 'salary',
+            type: 'input',
+            message:  'Enter Salary for role.'
+        },
+        {
+            name: 'dept_id',
+            type: 'input',
+            message:  'Enter the department id.'
+        }
+    ])
+    
+    .then(function (answer){
+        const query = connection.query(
+            'INSERT INTO roles SET ?',
+            {
+                title: answer.role,
+                salary: answer.salary,
+                department_id: answer.dept_id
+
+            },
+            function (err,res){
+                if (err) throw err;
+                console.table(res);
+            }
+        )
+    });
+}
+
 
 function addEmployee() {
     inquirer
@@ -201,26 +262,93 @@ function upDateRole() {
                 function(err, res) {
                   if (err) throw err;
                   console.log(res);
-                  // Call deleteProduct AFTER the UPDATE completes
-                  //deleteProduct();
+                  
                 }
               );
             console.log('what the chose', answer)
-        })
+        });
 
-        })
+        });
     });
 }
 
+function viewRole(){
+    const query = 'SELECT * FROM roles'
 
+    connection.query(query, function (err,res){
+        if (err) throw err;
+        console.table(res);
+    })
+}
+
+function viewDepartment(){
+    const query = 'SELECT * FROM department'
+
+    connection.query(query,function(err,res){
+        if (err) throw err;
+        console.table(res);
+    });
+}
+
+function removeEmployee(){
+    connection.query('SELECT * FROM employee', function (err, res) {
+        //console.log(res);
+        var empsNames = [];
+        for (var i = 0; i < res.length; i++) {
+           var fullName = res[i].first_name +  ' ' + res[i].last_name;
+            empsNames.push(fullName);
+        }
+
+    inquirer.prompt(
+        {  
+            name: 'remove_emp',
+            type: 'list',
+            message: 'Select employee to remove.',
+            choices: empsNames
+
+
+    })
+
+    .then(function(answer){
+        var delEmployee;
+        for (var i = 0; i < res.length; i++){
+            if (res[i].first_name +  ' ' + res[i].last_name === answer.remove_emp){
+                console.log(res[i])
+                delEmployee = res[i].id
+            }
+        }
+    
+    
+        connection.query(
+            'DELETE FROM employee WHERE ?',
+            {
+                id: delEmployee
+            },
+            function(err, res){
+                if (err) throw err;
+                viewAll();
+            }
+            
+        );
+            
+
+    });
+            
+});    
+
+
+            
+}
+    
 
 function viewAll() {
     const query = 'SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.name AS department, roles.salary From employee INNER JOIN roles ON (roles.id = employee.role_id) INNER JOIN department ON (department.id = roles.department_id)'
 
     connection.query(query, function (err, res) {
         if (err) throw err;
-        console.log(res);
-        connection.end();
+        console.table(res);
+        start();
+        // connection.end();
     })
 }
 
