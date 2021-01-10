@@ -20,7 +20,7 @@ Employee Tracker is a CLI applicaiton for building and maintaining companies emp
 ## Installation
 To install dependencies run the following command: 
 ```
-npm install
+npm install mysql inquirer console.table
 ```
 
 
