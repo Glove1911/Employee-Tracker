@@ -14,7 +14,7 @@
 
 
  ## Description
-Employee Tracker is a CLI applicaiton for building and maintaining companies employee data base. The application  can scale appropriately with a companies growth without reconfiguring the core structure of the internal employee data base.  The Employee Tracker allows users wtihin the organization managers to view all employees, roles, as well as departments. It also allows for adding employees, roles, and departments.  User can also update employee all from your CLI.
+Employee Tracker is a CLI applicaiton for building and maintaining companies employee data base. The application  can scale appropriately with a companies growth without reconfiguring the core structure of the internal employee data base.  The Employee Tracker allows users wtihin the organization to view all employees, roles, as well as departments. It also allows for adding employees, roles, and departments.  Users can also update employee roles all from your CLI.
 
 
 ## Installation
