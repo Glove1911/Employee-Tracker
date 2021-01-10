@@ -20,7 +20,7 @@ connection.connect(function (err) {
     if (err) throw err;
     start();
 });
-
+// Prompt's user to select changes to be made to database
 function start() {
     inquirer
         .prompt({
@@ -39,7 +39,7 @@ function start() {
                     addEmployee()
                     break;
 
-                case 'Add Departmemt':
+                case 'Add Department':
                     addDepartment()
                     break;
 
@@ -77,7 +77,7 @@ function start() {
             }
         });
 }
-
+// Prompt user for department to be added
 function addDepartment(){
     inquirer.prompt({
         
@@ -87,11 +87,11 @@ function addDepartment(){
         })
 
     .then(function (answer){
-
+// Inserts department into database
         const query = connection.query(
             'INSERT INTO department SET ?',
             {
-                department: answer.add_department
+                name: answer.add_department
             },
             function (err, res){
                 if (err) throw err;
@@ -100,7 +100,7 @@ function addDepartment(){
         );
     });
 }
-
+// Prompt user for role to add with salary and dept id
 function addRole(){
     inquirer.prompt([
         {
@@ -120,7 +120,7 @@ function addRole(){
             message:  'Enter the department id.'
         }
     ])
-    
+    // add's new role to role table
     .then(function (answer){
         const query = connection.query(
             'INSERT INTO roles SET ?',
@@ -133,6 +133,7 @@ function addRole(){
             function (err,res){
                 if (err) throw err;
                 console.table(res);
+                start()
             }
         )
     });
@@ -177,15 +178,15 @@ function addEmployee() {
 
                 function (err, res) {
                     if (err) throw err;
-                    viewAll();
-                    start();
+                    viewAll();            
+        
                 }
 
             );
         });
 
 }
-
+// creates empty array to push all employees to in order to select employees to update
 function upDateRole() {
 
     connection.query('SELECT * FROM employee', function (err, res) {
@@ -197,6 +198,7 @@ function upDateRole() {
             
         }
         console.log('PPls name to choose from!!',empsNames);
+// creates empty array to push all roles to  in order to select new role for employee
 
         connection.query('SELECT * FROM roles', function (err, roleRes) {
             console.log('ALL ROLES FORM DB!!',roleRes);
@@ -229,6 +231,7 @@ function upDateRole() {
 
         .then(function (answer) {
             var roleIdToUpdate;
+// Compares role from array to role entered from prompts to update
 
             for (var i = 0; i < roleRes.length; i++){
                 if (roleRes[i].title === answer.update_role){
@@ -236,7 +239,7 @@ function upDateRole() {
                     roleIdToUpdate = roleRes[i].id
                 }
             }
-
+// Comprares employee from array of employees to employee chosen from prompt to ensure correct employee is being updated
             var employeeUPdate;
 
             for (var i = 0; i < res.length; i++){
@@ -249,6 +252,7 @@ function upDateRole() {
             console.log('role id to update to ', roleIdToUpdate)
             console.log('Employe id to update', employeeUPdate)
 
+//  Updates the database with new role for selected employee
                 connection.query(
                 "UPDATE employee SET ? WHERE ?",
                 [
@@ -262,10 +266,12 @@ function upDateRole() {
                 function(err, res) {
                   if (err) throw err;
                   console.log(res);
+                  start();
                   
                 }
               );
             console.log('what the chose', answer)
+            
         });
 
         });
@@ -278,6 +284,7 @@ function viewRole(){
     connection.query(query, function (err,res){
         if (err) throw err;
         console.table(res);
+        start();
     })
 }
 
@@ -287,9 +294,11 @@ function viewDepartment(){
     connection.query(query,function(err,res){
         if (err) throw err;
         console.table(res);
+        start();
     });
 }
 
+// Creates array to store all employees
 function removeEmployee(){
     connection.query('SELECT * FROM employee', function (err, res) {
         //console.log(res);
@@ -308,6 +317,7 @@ function removeEmployee(){
 
 
     })
+// Compares employee in the array to employee chosen from prompts
 
     .then(function(answer){
         var delEmployee;
@@ -318,7 +328,8 @@ function removeEmployee(){
             }
         }
     
-    
+    // Deletes employee from employee table
+
         connection.query(
             'DELETE FROM employee WHERE ?',
             {
@@ -327,6 +338,7 @@ function removeEmployee(){
             function(err, res){
                 if (err) throw err;
                 viewAll();
+                
             }
             
         );
@@ -349,6 +361,12 @@ function viewAll() {
         console.table(res);
         start();
         // connection.end();
-    })
+    });
+
+    
+}
+
+function exit(){
+    connection.end();
 }
 
