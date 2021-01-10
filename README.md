@@ -25,7 +25,7 @@ npm install mysql inquirer console.table
 
 
 ## Usage
-Run the following command at the root of your project and answer the prompted questions:
+Run the following command and answer the prompted questions:
 ```
 node server.js
 ```
