@@ -24,6 +24,7 @@ npm install mysql inquirer console.table
 ```
 
 <img src = "https://github.com/Glove1911/Employee-Tracker/blob/main/F556AB87-DAA6-4299-A99E-041C2A6DAD55_1_105_c.jpeg">
+
 ## Usage
 Run the following command and answer the prompted questions:
 ```
